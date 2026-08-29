@@ -51,8 +51,9 @@ button.orange{background:var(--orange);color:#170b18}button.gray{background:#ddd
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = 'https://fpjwhprwikkhqzcigumo.supabase.co'.replace(/[{} ]/g,'');
+const SUPABASE_URL = 'https://fpjwhprwikkhqzcigumo.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_bAAy_xtUZbVGX2wJSXp-5g_iDIpDNYD';
+const APPROVED_ADMIN_USER_ID = '109e3f87-4415-44bf-9e19-c41145effc99';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let items = [];
 
@@ -64,7 +65,10 @@ function clearMsg(el){el.textContent='';el.classList.add('hidden');}
 
 async function refreshSession(){
  const {data}=await sb.auth.getSession();
- if(data.session){loginCard.classList.add('hidden');dashboard.classList.remove('hidden');await loadItems();}
+ if(data.session){
+   if(data.session.user.id!==APPROVED_ADMIN_USER_ID){await sb.auth.signOut();return;}
+   loginCard.classList.add('hidden');dashboard.classList.remove('hidden');await loadItems();
+ }
 }
 async function login(){
  clearMsg(loginMsg);
@@ -72,8 +76,7 @@ async function login(){
  const password=document.getElementById('password').value;
  const {data,error}=await sb.auth.signInWithPassword({email,password});
  if(error){msg(loginMsg,error.message);return;}
- const {data:admin,error:adminErr}=await sb.from('admin_users').select('user_id').eq('user_id',data.user.id).maybeSingle();
- if(adminErr||!admin){await sb.auth.signOut();msg(loginMsg,'This account is not authorized as a Get Loaded admin.');return;}
+ if(!data.user || data.user.id!==APPROVED_ADMIN_USER_ID){await sb.auth.signOut();msg(loginMsg,'This account is not authorized as a Get Loaded admin.');return;}
  loginCard.classList.add('hidden');dashboard.classList.remove('hidden');await loadItems();
 }
 async function loadItems(){
