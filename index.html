@@ -11,220 +11,107 @@ header{padding:26px 18px 20px;text-align:center;background:radial-gradient(circl
 .logo{font-size:46px;font-weight:950;font-style:italic;letter-spacing:-3px;line-height:.9}.logo span{color:var(--orange)}.tag{margin-top:10px;color:#ddd;font-weight:800;letter-spacing:2px}
 .notice{margin:18px auto;max-width:720px;border:1px solid var(--orange);border-radius:18px;padding:13px 16px;background:#201021;font-weight:800}.notice b{color:var(--orange)}
 main{max-width:1000px;margin:auto;padding:18px}.section-title{font-size:28px;font-weight:950;font-style:italic;margin:24px 0 12px;color:#fff}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
-.card{background:#1e1220;border:1px solid #70258c;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px #0008}.card img{width:100%;height:165px;object-fit:cover;background:#0b070b}.card-body{padding:14px}.name{font-size:19px;font-weight:950}.desc{font-size:13px;color:#d6cbd8;line-height:1.4;margin:6px 0 12px}.price{color:var(--orange);font-size:18px;font-weight:950}
+.category{margin:18px 0;border:1px solid #70258c;border-radius:18px;overflow:hidden;background:#1a101c}.category summary{cursor:pointer;list-style:none;padding:18px 20px;font-size:23px;font-weight:950;background:#241328}.category summary::-webkit-details-marker{display:none}.category summary:after{content:'+';float:right;color:var(--orange);font-size:26px}.category[open] summary:after{content:'−'}.category-grid{padding:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.card{background:#1e1220;border:1px solid #70258c;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px #0008}.card img{display:block;width:100%;height:165px;object-fit:cover;background:#0b070b}.card-body{padding:14px}.name{font-size:19px;font-weight:950}.desc{font-size:13px;color:#d6cbd8;line-height:1.4;margin:6px 0 12px}.price{color:var(--orange);font-size:18px;font-weight:950}
 .row{display:flex;gap:8px;align-items:center;margin-top:12px}.qty{width:72px;padding:11px;border-radius:12px;border:1px solid #6f5575;background:#120b13;color:white}.add{flex:1;border:0;border-radius:12px;padding:11px;background:var(--purple);color:white;font-weight:950;cursor:pointer}.add:hover{filter:brightness(1.12)}
 .cart{position:sticky;bottom:12px;margin-top:25px;background:#fff8f0;color:#170b18;border-radius:20px;padding:16px;box-shadow:0 15px 40px #0009}.cart h2{margin:0 0 8px}.cart-item{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eadde9}.checkout{display:block;width:100%;margin-top:12px;padding:14px;border:0;border-radius:14px;background:var(--orange);color:#180817;font-weight:950;font-size:17px}
-.small{font-size:12px;color:#6b5969}
-footer{text-align:center;padding:30px;color:#b9a8bc}
-
-.modal{display:none;position:fixed;inset:0;background:#000b;z-index:1000;padding:18px;overflow:auto}
-.modal.open{display:flex;align-items:center;justify-content:center}
-.modal-card{position:relative;width:min(620px,100%);max-height:94vh;overflow:auto;background:#fff8f0;color:#170b18;border-radius:22px;padding:22px;box-shadow:0 25px 80px #000c}
-.modal-card h2{margin-top:0}
-.close{position:absolute;right:12px;top:8px;border:0;background:transparent;font-size:32px;cursor:pointer;color:#170b18}
-label{display:block;font-weight:900;margin:12px 0}label input,label select{display:block;width:100%;margin-top:6px;padding:12px;border:1px solid #cbbbc9;border-radius:12px;font:inherit}
-.summary,.tracking-box,.deposit{margin:14px 0;padding:14px;border-radius:14px;background:#f0e5ef}
-.deposit{border:1px solid var(--orange)}
-.secondary{width:100%;margin-top:10px;padding:12px;border:1px solid #8f24c9;border-radius:12px;background:white;color:#170b18;font-weight:900}
-.cash-link{text-align:center;text-decoration:none;display:block}
-.track-link-wrap{text-align:center;margin:18px}.track-link{background:transparent;color:white;border:1px solid #8f24c9;border-radius:12px;padding:10px 16px;font-weight:900}
-.status{font-weight:950;color:#8f24c9}
+.small{font-size:12px;color:#6b5969}footer{text-align:center;padding:30px;color:#b9a8bc}.modal{display:none;position:fixed;inset:0;background:#000b;z-index:1000;padding:18px;overflow:auto}.modal.open{display:flex;align-items:center;justify-content:center}.modal-card{position:relative;width:min(620px,100%);max-height:94vh;overflow:auto;background:#fff8f0;color:#170b18;border-radius:22px;padding:22px;box-shadow:0 25px 80px #000c}.modal-card h2{margin-top:0}.close{position:absolute;right:12px;top:8px;border:0;background:transparent;font-size:32px;cursor:pointer;color:#170b18}label{display:block;font-weight:900;margin:12px 0}label input,label select{display:block;width:100%;margin-top:6px;padding:12px;border:1px solid #cbbbc9;border-radius:12px;font:inherit}.summary,.tracking-box,.deposit{margin:14px 0;padding:14px;border-radius:14px;background:#f0e5ef}.deposit{border:1px solid var(--orange)}.secondary{width:100%;margin-top:10px;padding:12px;border:1px solid #8f24c9;border-radius:12px;background:white;color:#170b18;font-weight:900}.cash-link{text-align:center;text-decoration:none;display:block}.track-link-wrap{text-align:center;margin:18px}.track-link{background:transparent;color:white;border:1px solid #8f24c9;border-radius:12px;padding:10px 16px;font-weight:900}.status{font-weight:950;color:#8f24c9}
 </style>
 </head>
 <body>
 <header>
   <div class="logo">GET <span>LOADED</span></div>
-  <div class="tag">GOOD FOOD. BIG FLAVOR. LET'S GET LOADED.</div><div style="margin-top:12px"><a href="admin.html" style="color:#ff7414;font-weight:900;text-decoration:none">Admin Login</a></div>
+  <div class="tag">GOOD FOOD. BIG FLAVOR. LET'S GET LOADED.</div>
+  <div style="margin-top:12px"><a href="admin.html" style="color:#ff7414;font-weight:900;text-decoration:none">Admin Login</a></div>
   <div class="notice"><b>$5 NON-REFUNDABLE DEPOSIT</b> is required to secure every order. The deposit does <b>NOT</b> go toward the final balance.</div>
 </header>
 <main>
-  <div id="birthday"></div>
-  <div id="regular"></div>
+  <div class="section-title">CEO BIRTHDAY WEEK MENU</div>
+  <details class="category" open><summary>🍔 Combos</summary><div id="combos" class="category-grid"></div></details>
+  <details class="category"><summary>🍟 Sides</summary><div id="sides" class="category-grid"></div></details>
+  <details class="category"><summary>🍰 Desserts</summary><div id="desserts" class="category-grid"></div></details>
+
   <div class="cart">
-    <h2>🛒 Your Load</h2>
-    <div id="cart"></div>
+    <h2>🛒 Your Load</h2><div id="cart"></div>
     <div id="total" style="font-weight:950;margin-top:10px">Subtotal: $0.00</div>
     <button class="checkout" onclick="openCheckout()">Next — Checkout</button>
     <div class="small" style="margin-top:8px">Pickup or delivery available. Delivery fee is $10. A $5 non-refundable deposit is required.</div>
   </div>
 </main>
 
-<div id="checkoutModal" class="modal" aria-hidden="true">
-  <div class="modal-card">
-    <button class="close" onclick="closeCheckout()" aria-label="Close">×</button>
-    <h2>Checkout</h2>
-    <p class="small">Enter your information so we can send your order confirmation and tracking number.</p>
-    <form id="checkoutForm" onsubmit="submitOrder(event)">
-      <label>Full name<input id="customerName" required autocomplete="name"></label>
-      <label>Email<input id="customerEmail" type="email" required autocomplete="email" placeholder="you@example.com"></label>
-      <label>Phone number<input id="customerPhone" type="tel" required autocomplete="tel" placeholder="(555) 555-5555"></label>
-      <label>Order type<select id="orderType" onchange="toggleDelivery()" required><option value="pickup">Pickup</option><option value="delivery">Delivery</option></select></label>
-      <div id="deliveryFields" style="display:none">
-        <label>Delivery address<input id="address" autocomplete="street-address" placeholder="Street address"></label>
-        <label>City/State/ZIP<input id="cityStateZip" autocomplete="address-level2"></label>
-      </div>
-      <label>Preferred time
-        <select id="orderTime" required>
-          <option value="">Choose a time</option>
-          <option>1:00 PM – 3:00 PM</option>
-          <option>4:00 PM – 5:00 PM</option>
-        </select>
-      </label>
-      <div class="summary" id="checkoutSummary"></div>
-      <div class="deposit"><b>$5 non-refundable deposit</b><br>After submitting your order, tap the Cash App button to pay the $5 deposit.</div>
-      <button class="checkout" type="submit">Submit Order</button>
-    </form>
-  </div>
-</div>
+<div id="checkoutModal" class="modal" aria-hidden="true"><div class="modal-card">
+  <button class="close" onclick="closeCheckout()" aria-label="Close">×</button><h2>Checkout</h2>
+  <p class="small">Enter your information so we can send your order confirmation and tracking number.</p>
+  <form id="checkoutForm" onsubmit="submitOrder(event)">
+    <label>Full name<input id="customerName" required autocomplete="name"></label>
+    <label>Email<input id="customerEmail" type="email" required autocomplete="email" placeholder="you@example.com"></label>
+    <label>Phone number<input id="customerPhone" type="tel" required autocomplete="tel" placeholder="(555) 555-5555"></label>
+    <label>Order type<select id="orderType" onchange="toggleDelivery()" required><option value="pickup">Pickup</option><option value="delivery">Delivery</option></select></label>
+    <div id="deliveryFields" style="display:none"><label>Delivery address<input id="address" autocomplete="street-address" placeholder="Street address"></label><label>City/State/ZIP<input id="cityStateZip" autocomplete="address-level2"></label></div>
+    <label>Preferred time<select id="orderTime" required><option value="">Choose a time</option><option>1:00 PM – 3:00 PM</option><option>4:00 PM – 5:00 PM</option></select></label>
+    <div class="summary" id="checkoutSummary"></div>
+    <div class="deposit"><b>$5 non-refundable deposit</b><br>After submitting your order, tap the Cash App button to pay the $5 deposit.</div>
+    <button class="checkout" type="submit">Submit Order</button>
+  </form>
+</div></div>
 
-<div id="confirmationModal" class="modal" aria-hidden="true">
-  <div class="modal-card">
-    <h2>🎉 Order Received!</h2>
-    <p>Your order has been submitted.</p>
-    <div class="tracking-box">
-      <div class="small">Your order tracking number</div>
-      <strong id="trackingNumber"></strong>
-    </div>
-    <p class="small">Save this number. You can use it on the <b>Track Order</b> page to check your order status.</p>
-    <a id="cashAppBtn" class="checkout cash-link" href="https://cash.app/$overlyloadedkitchenn?amount=5" target="_blank" rel="noopener">Pay $5 Deposit in Cash App</a>
-    <button class="secondary" onclick="showTracking()">Track This Order</button>
-    <button class="secondary" onclick="closeAll()">Back to Menu</button>
-  </div>
-</div>
+<div id="confirmationModal" class="modal" aria-hidden="true"><div class="modal-card">
+  <h2>🎉 Order Received!</h2><p>Your order has been submitted.</p>
+  <div class="tracking-box"><div class="small">Your order tracking number</div><strong id="trackingNumber"></strong></div>
+  <p class="small">Save this number. You can use it on the Track Order page to check your order status.</p>
+  <a id="cashAppBtn" class="checkout cash-link" href="https://cash.app/$overlyloadedkitchenn?amount=5" target="_blank" rel="noopener">Pay $5 Deposit in Cash App</a>
+  <button class="secondary" onclick="showTracking()">Track This Order</button><button class="secondary" onclick="closeAll()">Back to Menu</button>
+</div></div>
 
-<div id="trackingModal" class="modal" aria-hidden="true">
-  <div class="modal-card">
-    <button class="close" onclick="closeAll()" aria-label="Close">×</button>
-    <h2>Track Your Order</h2>
-    <p class="small">Enter the tracking number you received after submitting your order.</p>
-    <form onsubmit="trackOrder(event)">
-      <label>Order tracking number<input id="trackNumber" required placeholder="GL-2026-123456"></label>
-      <button class="checkout" type="submit">Track Order</button>
-    </form>
-    <div id="trackResult"></div>
-  </div>
-</div>
-
+<div id="trackingModal" class="modal" aria-hidden="true"><div class="modal-card">
+  <button class="close" onclick="closeAll()" aria-label="Close">×</button><h2>Track Your Order</h2><p class="small">Enter the tracking number you received after submitting your order.</p>
+  <form onsubmit="trackOrder(event)"><label>Order tracking number<input id="trackNumber" required placeholder="GL-2026-123456"></label><button class="checkout" type="submit">Track Order</button></form><div id="trackResult"></div>
+</div></div>
 <div class="track-link-wrap"><button class="track-link" onclick="showTracking()">📦 Track an Order</button></div>
 <footer>GET LOADED • Let's get loaded!!!</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = 'https://fpjwhprwikkhqzcigumo.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_bAAy_xtUZbVGX2wJSXp-5g_iDIpDNYD';
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL='https://fpjwhprwikkhqzcigumo.supabase.co';
+const SUPABASE_KEY='sb_publishable_bAAy_xtUZbVGX2wJSXp-5g_iDIpDNYD';
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const menu = {
- birthday:[
-  ['Fully Loaded','3 sliders, 6-piece wings, loaded fries, chips, and a drink.','$17.00','assets/fully-loaded.jpg'],
-  ['Southern Load','Jambalaya and catfish, choice of yams or greens, mac and cheese, and a drink.','$17.00','assets/southern-load.jpg'],
-  ['Boudin Balls','Crispy boudin balls served with cheese sauce. 2 for $10.','$10.00','assets/boudin-balls.jpg'],
-  ["Flamin' Hot Mozzarella Sticks","Flamin' Hot mozzarella sticks served with cheese sauce. 4 for $10.",'$10.00','assets/flamin-hot-mozzarella.jpg'],
-  ['Dipped Cheesecakes','Dipped cheesecake sweet treat.','$10.00','assets/dipped-cheesecake.jpg'],
-  ['Oreo Cookies','Oreo cookie sweet treat.','$10.00','assets/cookies.jpg'],
-  ['Biscoff Cookies','Biscoff cookie sweet treat.','$10.00','assets/cookies.jpg'],
-  ['Strawberry Crunch Cookies','Strawberry crunch cookie sweet treat.','$10.00','assets/cookies.jpg']
+const menu={
+ combos:[
+  ['Fully Loaded','3 sliders, 6-piece wings, loaded fries, chips, and a drink.','$17.00','fully-loaded.jpg'],
+  ['Southern Load','Jambalaya and catfish, choice of yams or greens, mac and cheese, and a drink.','$17.00','southern-load.jpg'],
+  ['Munchie Box','Chicken & waffles with 1 boudin ball.','$15.00','munchie-box.jpg'],
+  ['Lil Loaded Tray','2 boudin balls, Rotel dip, 6pc wings, shrimp Alfredo, baby shower meatballs, and chips.','$20.00','lil-loaded-tray.jpg'],
+  ['Reel Loaded','Salmon, shrimp, potatoes, and broccoli.','$20.00','reel-loaded.jpg']
  ],
- regular:[
-  ['Munchie Box','Chicken & waffles with 1 boudin ball.','$15.00','assets/munchie-box.jpg'],
-  ['Lil Loaded Tray','2 boudin balls, Rotel dip, 6pc wings, shrimp Alfredo, baby shower meatballs, and chips.','$20.00','assets/lil-loaded-tray.jpg'],
-  ['Reel Loaded','Salmon, shrimp, potatoes, and broccoli.','$20.00','assets/reel-loaded.jpg'],
-  ['Cookies','Biscoff, Strawberry Crunch, or Oreo.','$5.00','assets/cookies.jpg'],
-  ['Dipped Cheesecake','Biscoff, Strawberry Crunch, or Oreo.','$10.00','assets/dipped-cheesecake.jpg'],
-  ['Boudin Balls','2 boudin balls served with cheese sauce.','$10.00','assets/boudin-balls.jpg'],
-  ["Flamin' Hot Mozzarella Sticks","Flamin' Hot mozzarella sticks served with cheese sauce. 6 for $10.",'$10.00','assets/flamin-hot-mozzarella.jpg']
- ]};
+ sides:[
+  ['Boudin Balls','Crispy boudin balls served with cheese sauce. 2 for $10.','$10.00','boudin-balls.jpg'],
+  ["Flamin' Hot Mozzarella Sticks","Flamin' Hot mozzarella sticks served with cheese sauce. 6 for $10.",'$10.00','flamin-hot-mozzarella.jpg']
+ ],
+ desserts:[
+  ['Cookies','Biscoff, Strawberry Crunch, or Oreo.','$5.00','cookies.jpg'],
+  ['Dipped Cheesecake','Biscoff, Strawberry Crunch, or Oreo.','$10.00','dipped-cheesecake.jpg']
+ ]
+};
 let cart=[];
-function renderSection(id,title,items){
- const root=document.getElementById(id); root.innerHTML='<div class="section-title">'+title+'</div><div class="grid"></div>';
- const grid=root.querySelector('.grid');
- items.forEach((x,i)=>{const c=document.createElement('article');c.className='card';c.innerHTML=`<img src="${x[3]}" alt="${x[0]}"><div class="card-body"><div class="name">${x[0]}</div><div class="desc">${x[1]}</div><div class="price">${x[2]}</div><div class="row"><select class="qty">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<option>${n}</option>`).join('')}</select><button class="add">Add to Load</button></div></div>`;c.querySelector('.add').onclick=()=>add(x,Number(c.querySelector('.qty').value));grid.appendChild(c)})
+function renderSection(id,items){
+ const grid=document.getElementById(id);grid.innerHTML='';
+ items.forEach(x=>{const c=document.createElement('article');c.className='card';c.innerHTML=`<img src="${x[3]}" alt="${x[0]}"><div class="card-body"><div class="name">${x[0]}</div><div class="desc">${x[1]}</div><div class="price">${x[2]}</div><div class="row"><select class="qty">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<option>${n}</option>`).join('')}</select><button class="add">Add to Load</button></div></div>`;c.querySelector('.add').onclick=()=>add(x,Number(c.querySelector('.qty').value));grid.appendChild(c)})
 }
-function add(x,q){const found=cart.find(a=>a[0]===x[0]); if(found) found[1]+=q; else cart.push([x[0],q,parseFloat(x[2].replace('$',''))]); renderCart()}
-function renderCart(){const el=document.getElementById('cart');el.innerHTML=cart.length?cart.map((x,i)=>`<div class="cart-item"><span>${x[0]} × ${x[1]}</span><b>$${(x[1]*x[2]).toFixed(2)}</b></div>`).join(''):'<div class="small">Your cart is empty.</div>';let t=cart.reduce((s,x)=>s+x[1]*x[2],0);document.getElementById('total').textContent='Subtotal: $'+t.toFixed(2)}
-renderSection('birthday','CEO BIRTHDAY WEEK MENU',menu.birthday);
-renderSection('regular','REGULAR MENU',menu.regular);
-renderCart();
-
-async function loadMenuImagesFromDatabase(){
-  try{
-    const {data,error}=await supabaseClient.from('menu_items').select('name,image_url').eq('is_active',true);
-    if(error) throw error;
-    const byName=new Map((data||[]).map(r=>[r.name,r.image_url]).filter(([,u])=>u));
-    for(const section of Object.values(menu)){
-      for(const item of section){
-        if(byName.has(item[0])) item[3]=byName.get(item[0]);
-      }
-    }
-    renderSection('birthday','CEO BIRTHDAY WEEK MENU',menu.birthday);
-    renderSection('regular','REGULAR MENU',menu.regular);
-  }catch(err){
-    console.warn('Menu image sync unavailable; using bundled images.',err);
-  }
-}
+function renderMenu(){renderSection('combos',menu.combos);renderSection('sides',menu.sides);renderSection('desserts',menu.desserts)}
+function add(x,q){const found=cart.find(a=>a[0]===x[0]);if(found)found[1]+=q;else cart.push([x[0],q,parseFloat(x[2].replace('$',''))]);renderCart()}
+function renderCart(){const el=document.getElementById('cart');el.innerHTML=cart.length?cart.map(x=>`<div class="cart-item"><span>${x[0]} × ${x[1]}</span><b>$${(x[1]*x[2]).toFixed(2)}</b></div>`).join(''):'<div class="small">Your cart is empty.</div>';const t=cart.reduce((s,x)=>s+x[1]*x[2],0);document.getElementById('total').textContent='Subtotal: $'+t.toFixed(2)}
+renderMenu();renderCart();
+async function loadMenuImagesFromDatabase(){try{const{data,error}=await supabaseClient.from('menu_items').select('name,image_url').eq('is_active',true);if(error)throw error;const byName=new Map((data||[]).map(r=>[r.name,r.image_url]).filter(([,u])=>u));for(const section of Object.values(menu))for(const item of section)if(byName.has(item[0]))item[3]=byName.get(item[0]);renderMenu()}catch(err){console.warn('Menu image sync unavailable; using bundled images.',err)}}
 loadMenuImagesFromDatabase();
-
 function openModal(id){document.getElementById(id).classList.add('open');document.getElementById(id).setAttribute('aria-hidden','false')}
 function closeModal(id){document.getElementById(id).classList.remove('open');document.getElementById(id).setAttribute('aria-hidden','true')}
 function closeCheckout(){closeModal('checkoutModal')}
 function closeAll(){['checkoutModal','confirmationModal','trackingModal'].forEach(closeModal)}
-function openCheckout(){
- if(!cart.length){alert('Your cart is empty. Add an item first.');return}
- const subtotal=cart.reduce((s,x)=>s+x[1]*x[2],0);
- document.getElementById('checkoutSummary').innerHTML='<b>Subtotal:</b> $'+subtotal.toFixed(2)+'<br><b>Deposit:</b> $5.00';
- openModal('checkoutModal');
-}
-function toggleDelivery(){
- const delivery=document.getElementById('orderType').value==='delivery';
- document.getElementById('deliveryFields').style.display=delivery?'block':'none';
- document.getElementById('address').required=delivery;
- document.getElementById('cityStateZip').required=delivery;
- const subtotal=cart.reduce((s,x)=>s+x[1]*x[2],0);
- document.getElementById('checkoutSummary').innerHTML='<b>Subtotal:</b> $'+subtotal.toFixed(2)+(delivery?'<br><b>Delivery fee:</b> $10.00<br><b>Deposit:</b> $5.00<br><b>Total due today:</b> $5.00':'<br><b>Deposit:</b> $5.00<br><b>Total due today:</b> $5.00');
-}
-function makeTrackingNumber(){
- const d=new Date(), pad=n=>String(n).padStart(2,'0');
- return `GL-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${Math.floor(100000+Math.random()*900000)}`;
-}
-function submitOrder(e){
- e.preventDefault();
- if(!cart.length){alert('Your cart is empty.');return}
- const delivery=document.getElementById('orderType').value==='delivery';
- const subtotal=cart.reduce((s,x)=>s+x[1]*x[2],0);
- const tracking=makeTrackingNumber();
- const order={
-   trackingNumber:tracking,
-   name:document.getElementById('customerName').value.trim(),
-   email:document.getElementById('customerEmail').value.trim(),
-   phone:document.getElementById('customerPhone').value.trim(),
-   type:delivery?'Delivery':'Pickup',
-   address:delivery?document.getElementById('address').value.trim():'',
-   cityStateZip:delivery?document.getElementById('cityStateZip').value.trim():'',
-   time:document.getElementById('orderTime').value,
-   items:cart.map(x=>({name:x[0],quantity:x[1],unitPrice:x[2]})),
-   subtotal:Number(subtotal.toFixed(2)),
-   deliveryFee:delivery?10:0,
-   deposit:5,
-   status:'Order received',
-   createdAt:new Date().toISOString()
- };
- const orders=JSON.parse(localStorage.getItem('getLoadedOrders')||'[]');
- orders.push(order); localStorage.setItem('getLoadedOrders',JSON.stringify(orders));
- document.getElementById('trackingNumber').textContent=tracking;
- document.getElementById('cashAppBtn').href='https://cash.app/$overlyloadedkitchenn?amount=5';
- closeCheckout(); openModal('confirmationModal');
- cart=[];renderCart();
- document.getElementById('checkoutForm').reset(); toggleDelivery();
-}
+function openCheckout(){if(!cart.length){alert('Your cart is empty. Add an item first.');return}const subtotal=cart.reduce((s,x)=>s+x[1]*x[2],0);document.getElementById('checkoutSummary').innerHTML='<b>Subtotal:</b> $'+subtotal.toFixed(2)+'<br><b>Deposit:</b> $5.00<br><b>Total due today:</b> $5.00';openModal('checkoutModal')}
+function toggleDelivery(){const delivery=document.getElementById('orderType').value==='delivery';document.getElementById('deliveryFields').style.display=delivery?'block':'none';document.getElementById('address').required=delivery;document.getElementById('cityStateZip').required=delivery;const subtotal=cart.reduce((s,x)=>s+x[1]*x[2],0);document.getElementById('checkoutSummary').innerHTML='<b>Subtotal:</b> $'+subtotal.toFixed(2)+(delivery?'<br><b>Delivery fee:</b> $10.00':'')+'<br><b>Deposit:</b> $5.00<br><b>Total due today:</b> $5.00'}
+function makeTrackingNumber(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return`GL-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${Math.floor(100000+Math.random()*900000)}`}
+function submitOrder(e){e.preventDefault();if(!cart.length){alert('Your cart is empty.');return}const delivery=document.getElementById('orderType').value==='delivery';const subtotal=cart.reduce((s,x)=>s+x[1]*x[2],0);const tracking=makeTrackingNumber();const order={trackingNumber:tracking,name:document.getElementById('customerName').value.trim(),email:document.getElementById('customerEmail').value.trim(),phone:document.getElementById('customerPhone').value.trim(),type:delivery?'Delivery':'Pickup',address:delivery?document.getElementById('address').value.trim():'',cityStateZip:delivery?document.getElementById('cityStateZip').value.trim():'',time:document.getElementById('orderTime').value,items:cart.map(x=>({name:x[0],quantity:x[1],unitPrice:x[2]})),subtotal:Number(subtotal.toFixed(2)),deliveryFee:delivery?10:0,deposit:5,status:'Order received',createdAt:new Date().toISOString()};const orders=JSON.parse(localStorage.getItem('getLoadedOrders')||'[]');orders.push(order);localStorage.setItem('getLoadedOrders',JSON.stringify(orders));document.getElementById('trackingNumber').textContent=tracking;document.getElementById('cashAppBtn').href='https://cash.app/$overlyloadedkitchenn?amount=5';closeCheckout();openModal('confirmationModal');cart=[];renderCart();document.getElementById('checkoutForm').reset();toggleDelivery()}
 function showTracking(){closeAll();openModal('trackingModal')}
-function trackOrder(e){
- e.preventDefault();
- const n=document.getElementById('trackNumber').value.trim().toUpperCase();
- const orders=JSON.parse(localStorage.getItem('getLoadedOrders')||'[]');
- const order=orders.find(o=>o.trackingNumber.toUpperCase()===n);
- const r=document.getElementById('trackResult');
- if(!order){r.innerHTML='<div class="summary"><b>Order not found.</b><br>Check the tracking number and try again.</div>';return}
- r.innerHTML=`<div class="summary"><b>${order.name}</b><br>Status: <span class="status">${order.status}</span><br>${order.type} • ${order.time}<br>Total: $${(order.subtotal+order.deliveryFee).toFixed(2)}<br><span class="small">Tracking: ${order.trackingNumber}</span></div>`;
-}
+function trackOrder(e){e.preventDefault();const n=document.getElementById('trackNumber').value.trim().toUpperCase();const orders=JSON.parse(localStorage.getItem('getLoadedOrders')||'[]');const order=orders.find(o=>o.trackingNumber.toUpperCase()===n);const r=document.getElementById('trackResult');if(!order){r.innerHTML='<div class="summary"><b>Order not found.</b><br>Check the tracking number and try again.</div>';return}r.innerHTML=`<div class="summary"><b>${order.name}</b><br>Status: <span class="status">${order.status}</span><br>${order.type} • ${order.time}<br>Total: $${(order.subtotal+order.deliveryFee).toFixed(2)}<br><span class="small">Tracking: ${order.trackingNumber}</span></div>`}
 </script>
 </body></html>
