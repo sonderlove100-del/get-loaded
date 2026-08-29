@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Get Loaded | Admin</title>
+<style>
+:root{--purple:#8f24c9;--orange:#ff7414;--ink:#120912;--cream:#fff8f0}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--ink);color:#fff}
+.wrap{max-width:760px;margin:auto;padding:22px}
+.card{background:#fff8f0;color:#170b18;border-radius:20px;padding:20px;margin:18px 0}
+h1,h2{margin-top:0}label{display:block;font-weight:900;margin:12px 0}input,select{display:block;width:100%;padding:12px;margin-top:6px;border:1px solid #cbbbc9;border-radius:12px;font:inherit}
+button{border:0;border-radius:12px;padding:12px 16px;background:var(--purple);color:white;font-weight:900;cursor:pointer}
+button.orange{background:var(--orange);color:#170b18}button.gray{background:#ddd;color:#170b18}
+.msg{padding:12px;border-radius:12px;background:#eee;margin-top:12px;white-space:pre-wrap}
+.item{border:1px solid #ddd;border-radius:14px;padding:12px;margin:10px 0;display:grid;grid-template-columns:80px 1fr;gap:12px;align-items:center}
+.item img{width:80px;height:80px;object-fit:cover;border-radius:12px;background:#ddd}
+.small{font-size:12px;color:#6b5969}a{color:var(--orange);font-weight:900}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>GET LOADED Admin</h1>
+<div id="loginCard" class="card">
+<h2>Admin Login</h2>
+<p class="small">Admin access is restricted to the approved Get Loaded admin account.</p>
+<label>Email<input id="email" type="email" value="getloadedkitchenn@gmail.com" autocomplete="username"></label>
+<label>Password<input id="password" type="password" autocomplete="current-password"></label>
+<button class="orange" id="loginBtn">Log In</button>
+<div id="loginMsg" class="msg hidden"></div>
+</div>
+
+<div id="dashboard" class="hidden">
+<div class="card">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
+<h2>Menu Pictures</h2><button class="gray" id="logoutBtn">Log Out</button>
+</div>
+<p class="small">Choose a menu item, select a picture from your iPhone, then upload it. The new picture will appear on the customer website.</p>
+<label>Menu item<select id="itemSelect"></select></label>
+<label>Picture<input id="imageFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>
+<button class="orange" id="uploadBtn">Upload / Replace Picture</button>
+<div id="uploadMsg" class="msg hidden"></div>
+</div>
+<div class="card">
+<h2>Current Menu Pictures</h2>
+<div id="items"></div>
+</div>
+<p><a href="index.html">← Back to customer website</a></p>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://fpjwhprwikkhqzcigumo.supabase.co'.replace(/[{} ]/g,'');
+const SUPABASE_KEY = 'sb_publishable_bAAy_xtUZbVGX2wJSXp-5g_iDIpDNYD';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let items = [];
+
+const loginCard=document.getElementById('loginCard'), dashboard=document.getElementById('dashboard');
+const loginMsg=document.getElementById('loginMsg'), uploadMsg=document.getElementById('uploadMsg');
+
+function msg(el,text,ok=false){el.textContent=text;el.classList.remove('hidden');el.style.background=ok?'#e8f7e8':'#f7e8e8';}
+function clearMsg(el){el.textContent='';el.classList.add('hidden');}
+
+async function refreshSession(){
+ const {data}=await sb.auth.getSession();
+ if(data.session){loginCard.classList.add('hidden');dashboard.classList.remove('hidden');await loadItems();}
+}
+async function login(){
+ clearMsg(loginMsg);
+ const email=document.getElementById('email').value.trim();
+ const password=document.getElementById('password').value;
+ const {data,error}=await sb.auth.signInWithPassword({email,password});
+ if(error){msg(loginMsg,error.message);return;}
+ const {data:admin,error:adminErr}=await sb.from('admin_users').select('user_id').eq('user_id',data.user.id).maybeSingle();
+ if(adminErr||!admin){await sb.auth.signOut();msg(loginMsg,'This account is not authorized as a Get Loaded admin.');return;}
+ loginCard.classList.add('hidden');dashboard.classList.remove('hidden');await loadItems();
+}
+async function loadItems(){
+ const {data,error}=await sb.from('menu_items').select('id,name,image_url,is_active').order('display_order');
+ if(error){msg(uploadMsg,error.message);return;}
+ items=data||[];
+ const sel=document.getElementById('itemSelect');
+ sel.innerHTML=items.map(i=>`<option value="${i.id}">${i.name}</option>`).join('');
+ document.getElementById('items').innerHTML=items.map(i=>`
+   <div class="item">
+     <img src="${i.image_url||'assets/fully-loaded.jpg'}" alt="">
+     <div><b>${i.name}</b><div class="small">${i.image_url?'Custom picture uploaded':'No custom picture yet'}</div></div>
+   </div>`).join('');
+}
+async function upload(){
+ clearMsg(uploadMsg);
+ const id=document.getElementById('itemSelect').value;
+ const file=document.getElementById('imageFile').files[0];
+ if(!id||!file){msg(uploadMsg,'Choose a menu item and a picture first.');return;}
+ const item=items.find(i=>i.id===id);
+ const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
+ const safe=item.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+ const path=`menu/${id}-${safe}.${ext}`;
+ const {error:upErr}=await sb.storage.from('menu-images').upload(path,file,{upsert:true,contentType:file.type,cacheControl:'3600'});
+ if(upErr){msg(uploadMsg,upErr.message);return;}
+ const {data:urlData}=sb.storage.from('menu-images').getPublicUrl(path);
+ const {error:updateErr}=await sb.from('menu_items').update({image_url:urlData.publicUrl}).eq('id',id);
+ if(updateErr){msg(uploadMsg,updateErr.message);return;}
+ msg(uploadMsg,'Picture uploaded successfully. Refresh the customer website to see it.',true);
+ document.getElementById('imageFile').value='';
+ await loadItems();
+}
+document.getElementById('loginBtn').onclick=login;
+document.getElementById('uploadBtn').onclick=upload;
+document.getElementById('logoutBtn').onclick=async()=>{await sb.auth.signOut();location.reload();};
+sb.auth.onAuthStateChange((event,session)=>{if(!session){loginCard.classList.remove('hidden');dashboard.classList.add('hidden')}});
+refreshSession();
+</script>
+</body>
+</html>
