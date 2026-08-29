@@ -1,0 +1,143 @@
+name: Add live order tracking
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch customer tracking and admin order controls
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          admin = Path('admin.html')
+          text = admin.read_text()
+          marker = 'id="live-order-controls-v1"'
+          if marker not in text:
+              addon = r'''<style id="live-order-controls-v1">
+          .statusBtns button.onway{background:#e8ddff;border-color:#8f24c9}
+          .statusBtns button.selected{background:#ff7414!important;border-color:#ff7414!important}
+          .delete-order{background:#b42318!important;color:#fff!important}
+          .tracking-live-note{margin:10px 0;padding:10px 12px;border-radius:12px;background:#f0e5ef;font-weight:800}
+          </style>
+          <script>
+          (()=>{
+            const liveLabel={preparing:'Preparing',ready:'Ready',on_the_way:'On the Way',completed:'Order Completed'};
+            function enhance(){
+              document.querySelectorAll('.statusBtns').forEach(box=>{
+                if(!box.querySelector('[data-status="on_the_way"]')){
+                  const b=document.createElement('button');
+                  b.type='button'; b.className='onway'; b.dataset.status='on_the_way';
+                  b.textContent='🚗 On the Way';
+                  const completed=box.querySelector('[data-status="completed"]');
+                  box.insertBefore(b,completed||null);
+                }
+              });
+              document.querySelectorAll('[data-order-id]').forEach(card=>{
+                if(card.querySelector('[data-delete-order]')) return;
+                let actions=card.querySelector('.order-actions');
+                if(!actions){ actions=document.createElement('div'); actions.className='order-actions'; card.appendChild(actions); }
+                const b=document.createElement('button');
+                b.type='button'; b.className='delete-order'; b.dataset.deleteOrder=card.dataset.orderId; b.textContent='🗑️ Delete Order';
+                actions.appendChild(b);
+              });
+            }
+            document.addEventListener('click',async e=>{
+              const status=e.target.closest('[data-status]');
+              if(status && status.dataset.status==='on_the_way'){
+                e.preventDefault(); e.stopImmediatePropagation();
+                await setStatus(status.dataset.order,'on_the_way');
+                return;
+              }
+              const del=e.target.closest('[data-delete-order]');
+              if(del){
+                e.preventDefault(); e.stopImmediatePropagation();
+                if(!confirm('Delete this order permanently? This cannot be undone.')) return;
+                del.disabled=true; del.textContent='Deleting…';
+                const r=await sb.rpc('admin_delete_order',{p_order_id:del.dataset.deleteOrder});
+                if(r.error){alert(r.error.message);del.disabled=false;del.textContent='🗑️ Delete Order';return;}
+                await loadOrders();
+              }
+            },true);
+            new MutationObserver(enhance).observe(document.getElementById('ordersList')||document.body,{childList:true,subtree:true});
+            setTimeout(enhance,300);
+          })();
+          </script>'''
+              text = text.replace('</body>', addon + '</body>')
+              admin.write_text(text)
+
+          index = Path('index.html')
+          text = index.read_text()
+          marker = 'id="live-customer-tracking-v1"'
+          if marker not in text:
+              addon = r'''<style id="live-customer-tracking-v1">
+          .live-track{margin-top:18px;padding:18px;border-radius:18px;background:#fff;color:#170b18}
+          .live-track h3{margin:0 0 6px;font-size:24px}
+          .live-track .headline{font-size:18px;font-weight:900;margin-bottom:16px}
+          .live-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;align-items:start;margin:18px 0}
+          .live-step{text-align:center;position:relative;font-size:11px;font-weight:900;color:#8a7b89}
+          .live-step:before{content:'';position:absolute;top:16px;left:50%;width:100%;height:5px;background:#e8e0e8;z-index:0}
+          .live-step:last-child:before{display:none}
+          .live-step .dot{position:relative;z-index:1;width:34px;height:34px;border-radius:50%;margin:0 auto 7px;background:#e8e0e8;display:flex;align-items:center;justify-content:center;font-size:16px}
+          .live-step.active{color:#170b18}.live-step.active .dot{background:#ff7414;color:#170b18}.live-step.done .dot{background:#8f24c9;color:#fff}.live-step.done:before{background:#8f24c9}
+          .live-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}
+          .live-meta div{padding:11px;border-radius:12px;background:#f0e5ef}.live-meta b{display:block;font-size:12px;color:#6b5969;margin-bottom:3px}
+          .live-items{margin-top:12px;padding-top:10px;border-top:1px solid #e4d8e3}.live-items div{padding:4px 0}
+          @media(max-width:480px){.live-step{font-size:9px}.live-step .dot{width:30px;height:30px}}
+          </style>
+          <script id="live-customer-tracking-v1">
+          (()=>{
+            const esc2=v=>String(v??'').replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]));
+            const stages=[
+              ['📥','Order Received','new'],
+              ['👨‍🍳','Preparing','preparing'],
+              ['📦','Ready','ready'],
+              ['🚗','On the Way','on_the_way'],
+              ['🏠','Completed','completed']
+            ];
+            const rank={new:0,deposit_pending:0,confirmed:0,preparing:1,ready:2,on_the_way:3,completed:4,cancelled:-1};
+            const messages={
+              new:'We received your order.',deposit_pending:'Your order is received. Your $5 deposit is pending.',confirmed:'Your order is confirmed and will be prepared for your pickup time.',
+              preparing:'We are preparing your order now.',ready:'Your order is ready for pickup.',on_the_way:'Your order is on the way.',completed:'Your order has been completed. Thank you!'
+            };
+            function render(o){
+              if(!o) return '<div class="error">Order not found. Check the tracking number and try again.</div>';
+              const r=rank[o.status]??0;
+              const steps=stages.map((s,i)=>`<div class="live-step ${i<r?'done ':''}${i===r?'active':''}"><div class="dot">${s[0]}</div>${s[1]}</div>`).join('');
+              const items=(o.items||[]).map(x=>`<div>${esc2(x.quantity)} × ${esc2(x.name)}${x.selected_options&&Object.keys(x.selected_options).length?' — '+esc2(Object.values(x.selected_options).join(', ')):''}</div>`).join('');
+              return `<div class="live-track"><h3>📦 ${esc2(o.order_number)}</h3><div class="headline">${esc2(messages[o.status]||'Your order status was updated.')}</div><div class="live-steps">${steps}</div><div class="live-meta"><div><b>STATUS</b>${esc2((o.status||'').replaceAll('_',' ').replace(/\b\w/g,x=>x.toUpperCase()))}</div><div><b>ORDER TYPE</b>${esc2(o.fulfillment_method||'')}</div><div><b>PICKUP / DELIVERY</b>${esc2(o.pickup_date||'')} ${esc2(o.pickup_time||'')}</div><div><b>TOTAL</b>$${Number(o.final_total||0).toFixed(2)}</div></div>${items?`<div class="live-items"><b>Items</b>${items}</div>`:''}</div>`;
+            }
+            document.addEventListener('submit',async e=>{
+              if(e.target.id!=='trackForm') return;
+              e.preventDefault(); e.stopImmediatePropagation();
+              const input=document.getElementById('trackNumber'), out=document.getElementById('trackResult'), n=input.value.trim();
+              if(!n) return; out.innerHTML='<div class="loading">Loading live tracking…</div>';
+              const r=await sb.rpc('track_order',{p_order_number:n});
+              if(r.error){out.innerHTML='<div class="error">'+esc2(r.error.message)+'</div>';return;}
+              out.innerHTML=render(r.data);
+            },true);
+          })();
+          </script>'''
+              text = text.replace('</body>', addon + '</body>')
+              index.write_text(text)
+          PY
+
+      - name: Commit patched files
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add admin.html index.html
+          if git diff --cached --quiet; then
+            echo 'No changes needed.'
+            exit 0
+          fi
+          git commit -m 'Add live order tracking controls [skip ci]'
+          git push
