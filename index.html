@@ -19,4 +19,51 @@ function openCheckout(){if(!cart.length)return alert('Your cart is empty. Add an
 $('checkoutForm').addEventListener('submit',async e=>{e.preventDefault();if(!cart.length)return;$('submitBtn').disabled=true;$('submitBtn').textContent='Submitting…';$('submitMsg').style.display='none';const delivery=$('orderType').value==='delivery';const p_items=cart.map(x=>({menu_item_id:x.item.id,quantity:x.quantity,selected_options:x.selected}));const r=await sb.rpc('submit_order',{p_name:$('customerName').value.trim(),p_phone:$('customerPhone').value.trim(),p_email:$('customerEmail').value.trim(),p_pickup_date:$('orderDate').value,p_pickup_time:$('orderTime').value,p_fulfillment_type:delivery?'delivery':'pickup',p_delivery_address:delivery?$('address').value.trim():null,p_notes:$('notes').value.trim()||null,p_items});$('submitBtn').disabled=false;$('submitBtn').textContent='Submit Order';if(r.error){$('submitMsg').textContent=r.error.message;$('submitMsg').style.display='block';return}let result=r.data;if(typeof result==='string')try{result=JSON.parse(result)}catch{}if(Array.isArray(result))result=result[0];if(!result?.order_number){$('submitMsg').textContent='Order was not returned correctly. Please try again.';$('submitMsg').style.display='block';return}$('trackingNumber').textContent=result.order_number;closeModal('checkoutModal');openModal('confirmationModal');cart=[];renderCart();$('checkoutForm').reset();$('deliveryFields').classList.add('hidden')});
 $('trackThis').onclick=()=>{const n=$('trackingNumber').textContent;closeModal('confirmationModal');$('trackNumber').value=n;openModal('trackingModal');$('trackForm').dispatchEvent(new Event('submit',{cancelable:true}))};$('trackForm').addEventListener('submit',async e=>{e.preventDefault();const n=$('trackNumber').value.trim();if(!n)return;const r=await sb.rpc('track_order',{p_order_number:n});if(r.error){$('trackResult').innerHTML='<div class="error">'+esc(r.error.message)+'</div>';return}let d=r.data;if(typeof d==='string')try{d=JSON.parse(d)}catch{}if(Array.isArray(d))d=d[0];if(!d){$('trackResult').innerHTML='<div class="summary"><b>Order not found.</b><br>Check the tracking number.</div>';return}$('trackResult').innerHTML=`<div class="summary"><b>Tracking:</b> ${esc(d.order_number)}<br><b>Status:</b> <span class="status">${esc(d.status)}</span><br><b>Pickup:</b> ${esc(d.pickup_date||'')} ${esc(d.pickup_time||'')}<br><b>Type:</b> ${esc(d.fulfillment_method||'pickup')}<br><b>Total:</b> $${Number(d.final_total||d.subtotal||0).toFixed(2)}<br><b>Deposit:</b> ${d.deposit_paid?'Paid':'Pending'}<br><b>Remaining:</b> $${Number(d.remaining_balance||0).toFixed(2)}<hr>${(d.items||[]).map(i=>`${i.quantity} × ${esc(i.name||i.item_name)} — $${Number(i.line_total||0).toFixed(2)}`).join('<br>')}</div>`});
 loadMenu();renderCart();
+</script><style id="live-customer-tracking-v1">
+.live-track{margin-top:18px;padding:18px;border-radius:18px;background:#fff;color:#170b18}
+.live-track h3{margin:0 0 6px;font-size:24px}
+.live-track .headline{font-size:18px;font-weight:900;margin-bottom:16px}
+.live-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;align-items:start;margin:18px 0}
+.live-step{text-align:center;position:relative;font-size:11px;font-weight:900;color:#8a7b89}
+.live-step:before{content:'';position:absolute;top:16px;left:50%;width:100%;height:5px;background:#e8e0e8;z-index:0}
+.live-step:last-child:before{display:none}
+.live-step .dot{position:relative;z-index:1;width:34px;height:34px;border-radius:50%;margin:0 auto 7px;background:#e8e0e8;display:flex;align-items:center;justify-content:center;font-size:16px}
+.live-step.active{color:#170b18}.live-step.active .dot{background:#ff7414;color:#170b18}.live-step.done .dot{background:#8f24c9;color:#fff}.live-step.done:before{background:#8f24c9}
+.live-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}
+.live-meta div{padding:11px;border-radius:12px;background:#f0e5ef}.live-meta b{display:block;font-size:12px;color:#6b5969;margin-bottom:3px}
+.live-items{margin-top:12px;padding-top:10px;border-top:1px solid #e4d8e3}.live-items div{padding:4px 0}
+@media(max-width:480px){.live-step{font-size:9px}.live-step .dot{width:30px;height:30px}}
+</style>
+<script id="live-customer-tracking-v1">
+(()=>{
+  const esc2=v=>String(v??'').replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]));
+  const stages=[
+    ['📥','Order Received','new'],
+    ['👨‍🍳','Preparing','preparing'],
+    ['📦','Ready','ready'],
+    ['🚗','On the Way','on_the_way'],
+    ['🏠','Completed','completed']
+  ];
+  const rank={new:0,deposit_pending:0,confirmed:0,preparing:1,ready:2,on_the_way:3,completed:4,cancelled:-1};
+  const messages={
+    new:'We received your order.',deposit_pending:'Your order is received. Your $5 deposit is pending.',confirmed:'Your order is confirmed and will be prepared for your pickup time.',
+    preparing:'We are preparing your order now.',ready:'Your order is ready for pickup.',on_the_way:'Your order is on the way.',completed:'Your order has been completed. Thank you!'
+  };
+  function render(o){
+    if(!o) return '<div class="error">Order not found. Check the tracking number and try again.</div>';
+    const r=rank[o.status]??0;
+    const steps=stages.map((s,i)=>`<div class="live-step ${i<r?'done ':''}${i===r?'active':''}"><div class="dot">${s[0]}</div>${s[1]}</div>`).join('');
+    const items=(o.items||[]).map(x=>`<div>${esc2(x.quantity)} × ${esc2(x.name)}${x.selected_options&&Object.keys(x.selected_options).length?' — '+esc2(Object.values(x.selected_options).join(', ')):''}</div>`).join('');
+    return `<div class="live-track"><h3>📦 ${esc2(o.order_number)}</h3><div class="headline">${esc2(messages[o.status]||'Your order status was updated.')}</div><div class="live-steps">${steps}</div><div class="live-meta"><div><b>STATUS</b>${esc2((o.status||'').replaceAll('_',' ').replace(/\b\w/g,x=>x.toUpperCase()))}</div><div><b>ORDER TYPE</b>${esc2(o.fulfillment_method||'')}</div><div><b>PICKUP / DELIVERY</b>${esc2(o.pickup_date||'')} ${esc2(o.pickup_time||'')}</div><div><b>TOTAL</b>$${Number(o.final_total||0).toFixed(2)}</div></div>${items?`<div class="live-items"><b>Items</b>${items}</div>`:''}</div>`;
+  }
+  document.addEventListener('submit',async e=>{
+    if(e.target.id!=='trackForm') return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    const input=document.getElementById('trackNumber'), out=document.getElementById('trackResult'), n=input.value.trim();
+    if(!n) return; out.innerHTML='<div class="loading">Loading live tracking…</div>';
+    const r=await sb.rpc('track_order',{p_order_number:n});
+    if(r.error){out.innerHTML='<div class="error">'+esc2(r.error.message)+'</div>';return;}
+    out.innerHTML=render(r.data);
+  },true);
+})();
 </script></body></html>
