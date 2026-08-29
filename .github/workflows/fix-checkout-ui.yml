@@ -1,0 +1,48 @@
+name: Fix checkout UI
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  patch-checkout:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Patch checkout UI
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          old_css = "</style>"
+          new_css = ".hidden{display:none!important}</style>"
+          if ".hidden{display:none!important}" not in s:
+              s = s.replace(old_css, new_css, 1)
+
+          old_warning = "<div class=\"deposit\"><b>$5 non-refundable deposit</b><br>After submitting, your confirmation shows the Cash App payment button and tracking number.</div>"
+          new_warning = "<div class=\"deposit\"><b>⚠️ IMPORTANT: $5 NON-REFUNDABLE DEPOSIT REQUIRED</b><br>Your order will NOT be made until the $5 deposit is sent. The $5 deposit does <b>NOT</b> go toward your final total.</div>"
+          if old_warning in s:
+              s = s.replace(old_warning, new_warning, 1)
+
+          p.write_text(s, encoding='utf-8')
+
+      - name: Commit and push
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No checkout UI changes needed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Fix pickup address visibility and deposit warning"
+          git push
