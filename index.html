@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Get Loaded | Order</title>
+<style>
+:root{--purple:#8f24c9;--orange:#ff7414;--ink:#120912;--cream:#fff8f0}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,sans-serif;background:var(--ink);color:white}
+header{padding:26px 18px 20px;text-align:center;background:radial-gradient(circle at 50% 0,#57206e 0,#1b0b1c 42%,#120912 70%)}
+.logo{font-size:46px;font-weight:950;font-style:italic;letter-spacing:-3px;line-height:.9}.logo span{color:var(--orange)}.tag{margin-top:10px;color:#ddd;font-weight:800;letter-spacing:2px}
+.notice{margin:18px auto;max-width:720px;border:1px solid var(--orange);border-radius:18px;padding:13px 16px;background:#201021;font-weight:800}.notice b{color:var(--orange)}
+main{max-width:1000px;margin:auto;padding:18px}.section-title{font-size:28px;font-weight:950;font-style:italic;margin:24px 0 12px;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.card{background:#1e1220;border:1px solid #70258c;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px #0008}.card img{width:100%;height:165px;object-fit:cover;background:#0b070b}.card-body{padding:14px}.name{font-size:19px;font-weight:950}.desc{font-size:13px;color:#d6cbd8;line-height:1.4;margin:6px 0 12px}.price{color:var(--orange);font-size:18px;font-weight:950}
+.row{display:flex;gap:8px;align-items:center;margin-top:12px}.qty{width:72px;padding:11px;border-radius:12px;border:1px solid #6f5575;background:#120b13;color:white}.add{flex:1;border:0;border-radius:12px;padding:11px;background:var(--purple);color:white;font-weight:950;cursor:pointer}.add:hover{filter:brightness(1.12)}
+.cart{position:sticky;bottom:12px;margin-top:25px;background:#fff8f0;color:#170b18;border-radius:20px;padding:16px;box-shadow:0 15px 40px #0009}.cart h2{margin:0 0 8px}.cart-item{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eadde9}.checkout{display:block;width:100%;margin-top:12px;padding:14px;border:0;border-radius:14px;background:var(--orange);color:#180817;font-weight:950;font-size:17px}
+.small{font-size:12px;color:#6b5969}
+footer{text-align:center;padding:30px;color:#b9a8bc}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">GET <span>LOADED</span></div>
+  <div class="tag">GOOD FOOD. BIG FLAVOR. LET'S GET LOADED.</div>
+  <div class="notice"><b>$5 NON-REFUNDABLE DEPOSIT</b> is required to secure every order. The deposit does <b>NOT</b> go toward the final balance.</div>
+</header>
+<main>
+  <div id="birthday"></div>
+  <div id="regular"></div>
+  <div class="cart">
+    <h2>🛒 Your Load</h2>
+    <div id="cart"></div>
+    <div id="total" style="font-weight:950;margin-top:10px">Subtotal: $0.00</div>
+    <button class="checkout" onclick="alert('Next step: checkout will collect pickup/delivery details and show the $5 Cash App deposit step.')">Next — Checkout</button>
+    <div class="small" style="margin-top:8px">Pickup or delivery can be selected at checkout. Delivery fee is not set yet.</div>
+  </div>
+</main>
+<footer>GET LOADED • Let's get loaded!!!</footer>
+<script>
+const menu = {
+ birthday:[
+  ['Fully Loaded','3 sliders, 6-piece wings, loaded fries, chips, and a drink.','$17.00','assets/fully-loaded.jpg'],
+  ['Southern Load','Jambalaya and catfish, choice of yams or greens, mac and cheese, and a drink.','$17.00','assets/southern-load.jpg'],
+  ['Boudin Balls','Crispy boudin balls served with cheese sauce. 2 for $10.','$10.00','assets/boudin-balls.jpg'],
+  ["Flamin' Hot Mozzarella Sticks","Flamin' Hot mozzarella sticks served with cheese sauce. 4 for $10.",'$10.00','assets/flamin-hot-mozzarella.jpg'],
+  ['Dipped Cheesecakes','Dipped cheesecake sweet treat.','$10.00','assets/dipped-cheesecake.jpg'],
+  ['Oreo Cookies','Oreo cookie sweet treat.','$10.00','assets/cookies.jpg'],
+  ['Biscoff Cookies','Biscoff cookie sweet treat.','$10.00','assets/cookies.jpg'],
+  ['Strawberry Crunch Cookies','Strawberry crunch cookie sweet treat.','$10.00','assets/cookies.jpg']
+ ],
+ regular:[
+  ['Munchie Box','Chicken & waffles with 1 boudin ball.','$15.00','assets/munchie-box.jpg'],
+  ['Lil Loaded Tray','2 boudin balls, Rotel dip, 6pc wings, shrimp Alfredo, baby shower meatballs, and chips.','$20.00','assets/lil-loaded-tray.jpg'],
+  ['Reel Loaded','Salmon, shrimp, potatoes, and broccoli.','$20.00','assets/reel-loaded.jpg'],
+  ['Cookies','Biscoff, Strawberry Crunch, or Oreo.','$5.00','assets/cookies.jpg'],
+  ['Dipped Cheesecake','Biscoff, Strawberry Crunch, or Oreo.','$10.00','assets/dipped-cheesecake.jpg'],
+  ['Boudin Balls','2 boudin balls served with cheese sauce.','$10.00','assets/boudin-balls.jpg'],
+  ["Flamin' Hot Mozzarella Sticks","Flamin' Hot mozzarella sticks served with cheese sauce. 6 for $10.",'$10.00','assets/flamin-hot-mozzarella.jpg']
+ ]};
+let cart=[];
+function renderSection(id,title,items){
+ const root=document.getElementById(id); root.innerHTML='<div class="section-title">'+title+'</div><div class="grid"></div>';
+ const grid=root.querySelector('.grid');
+ items.forEach((x,i)=>{const c=document.createElement('article');c.className='card';c.innerHTML=`<img src="${x[3]}" alt="${x[0]}"><div class="card-body"><div class="name">${x[0]}</div><div class="desc">${x[1]}</div><div class="price">${x[2]}</div><div class="row"><select class="qty">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<option>${n}</option>`).join('')}</select><button class="add">Add to Load</button></div></div>`;c.querySelector('.add').onclick=()=>add(x,Number(c.querySelector('.qty').value));grid.appendChild(c)})
+}
+function add(x,q){const found=cart.find(a=>a[0]===x[0]); if(found) found[1]+=q; else cart.push([x[0],q,parseFloat(x[2].replace('$',''))]); renderCart()}
+function renderCart(){const el=document.getElementById('cart');el.innerHTML=cart.length?cart.map((x,i)=>`<div class="cart-item"><span>${x[0]} × ${x[1]}</span><b>$${(x[1]*x[2]).toFixed(2)}</b></div>`).join(''):'<div class="small">Your cart is empty.</div>';let t=cart.reduce((s,x)=>s+x[1]*x[2],0);document.getElementById('total').textContent='Subtotal: $'+t.toFixed(2)}
+renderSection('birthday','CEO BIRTHDAY WEEK MENU',menu.birthday);
+renderSection('regular','REGULAR MENU',menu.regular);
+renderCart();
+</script>
+</body></html>
