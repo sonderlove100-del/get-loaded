@@ -17,7 +17,7 @@ main{max-width:1000px;margin:auto;padding:18px}.section-title{font-size:28px;fon
 .cart{position:sticky;bottom:12px;margin-top:25px;background:#fff8f0;color:#170b18;border-radius:20px;padding:16px;box-shadow:0 15px 40px #0009}.cart h2{margin:0 0 8px}.cart-item{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eadde9}.checkout{display:block;width:100%;margin-top:12px;padding:14px;border:0;border-radius:14px;background:var(--orange);color:#180817;font-weight:950;font-size:17px}
 .small{font-size:12px;color:#6b5969}
 footer{text-align:center;padding:30px;color:#b9a8bc}
-</style>
+input,textarea,select{font:inherit}label{font-weight:800;color:#2a182c}.checkout:active{transform:translateY(1px)}</style>
 </head>
 <body>
 <header>
@@ -32,33 +32,77 @@ footer{text-align:center;padding:30px;color:#b9a8bc}
     <h2>🛒 Your Load</h2>
     <div id="cart"></div>
     <div id="total" style="font-weight:950;margin-top:10px">Subtotal: $0.00</div>
-    <button class="checkout" onclick="alert('Next step: checkout will collect pickup/delivery details and show the $5 Cash App deposit step.')">Next — Checkout</button>
-    <div class="small" style="margin-top:8px">Pickup or delivery can be selected at checkout. Delivery fee is not set yet.</div>
+    <button class="checkout" onclick="openCheckout()">Next — Checkout</button>
+    <div class="small" style="margin-top:8px">Pickup or delivery available. Delivery fee: $10.</div>
+    <div id="checkoutBox" style="display:none;margin-top:14px;padding:14px;border:1px solid #eadde9;border-radius:14px">
+      <h3 style="margin-top:0">Checkout</h3>
+      <label>Name<br><input id="custName" required style="width:100%;padding:10px;border-radius:10px;border:1px solid #c9b8c9"></label><br><br>
+      <label>Phone<br><input id="custPhone" required type="tel" style="width:100%;padding:10px;border-radius:10px;border:1px solid #c9b8c9"></label><br><br>
+      <label>Order type<br>
+        <select id="orderType" onchange="toggleAddress()" style="width:100%;padding:10px;border-radius:10px">
+          <option value="pickup">Pickup</option><option value="delivery">Delivery</option>
+        </select>
+      </label><br><br>
+      <div id="addressWrap" style="display:none"><label>Delivery address<br><textarea id="custAddress" rows="3" style="width:100%;padding:10px;border-radius:10px;border:1px solid #c9b8c9"></textarea></label><br><br></div>
+      <label>Pickup time<br>
+        <select id="pickupTime" style="width:100%;padding:10px;border-radius:10px">
+          <option>1–3 PM</option><option>4–5 PM</option>
+        </select>
+      </label><br><br>
+      <div id="checkoutSummary" class="small"></div>
+      <button class="checkout" onclick="payDeposit()">Pay $5 Deposit with Cash App</button>
+      <div class="small" style="margin-top:8px">After paying the $5 non-refundable deposit, return here and tap “Send Order.”</div>
+      <button class="checkout" style="background:#8f24c9;color:white" onclick="sendOrder()">Send Order</button>
+    </div>
   </div>
 </main>
 <footer>GET LOADED • Let's get loaded!!!</footer>
 <script>
 const menu = {
  birthday:[
-  ['Fully Loaded','3 sliders, 6-piece wings, loaded fries, chips, and a drink.','$17.00','assets/fully-loaded.jpg'],
-  ['Southern Load','Jambalaya and catfish, choice of yams or greens, mac and cheese, and a drink.','$17.00','assets/southern-load.jpg'],
-  ['Boudin Balls','Crispy boudin balls served with cheese sauce. 2 for $10.','$10.00','assets/boudin-balls.jpg'],
-  ["Flamin' Hot Mozzarella Sticks","Flamin' Hot mozzarella sticks served with cheese sauce. 4 for $10.",'$10.00','assets/flamin-hot-mozzarella.jpg'],
-  ['Dipped Cheesecakes','Dipped cheesecake sweet treat.','$10.00','assets/dipped-cheesecake.jpg'],
-  ['Oreo Cookies','Oreo cookie sweet treat.','$10.00','assets/cookies.jpg'],
-  ['Biscoff Cookies','Biscoff cookie sweet treat.','$10.00','assets/cookies.jpg'],
-  ['Strawberry Crunch Cookies','Strawberry crunch cookie sweet treat.','$10.00','assets/cookies.jpg']
+  ['Fully Loaded','3 sliders, 6-piece wings, loaded fries, chips, and a drink.','$17.00','fully-loaded.jpg'],
+  ['Southern Load','Jambalaya and catfish, choice of yams or greens, mac and cheese, and a drink.','$17.00','southern-load.jpg'],
+  ['Boudin Balls','Crispy boudin balls served with cheese sauce. 2 for $10.','$10.00','boudin-balls.jpg'],
+  ["Flamin' Hot Mozzarella Sticks","Flamin' Hot mozzarella sticks served with cheese sauce. 4 for $10.",'$10.00','flamin-hot-mozzarella.jpg'],
+  ['Dipped Cheesecakes','Dipped cheesecake sweet treat.','$10.00','dipped-cheesecake.jpg'],
+  ['Oreo Cookies','Oreo cookie sweet treat.','$10.00','cookies.jpg'],
+  ['Biscoff Cookies','Biscoff cookie sweet treat.','$10.00','cookies.jpg'],
+  ['Strawberry Crunch Cookies','Strawberry crunch cookie sweet treat.','$10.00','cookies.jpg']
  ],
  regular:[
-  ['Munchie Box','Chicken & waffles with 1 boudin ball.','$15.00','assets/munchie-box.jpg'],
-  ['Lil Loaded Tray','2 boudin balls, Rotel dip, 6pc wings, shrimp Alfredo, baby shower meatballs, and chips.','$20.00','assets/lil-loaded-tray.jpg'],
-  ['Reel Loaded','Salmon, shrimp, potatoes, and broccoli.','$20.00','assets/reel-loaded.jpg'],
-  ['Cookies','Biscoff, Strawberry Crunch, or Oreo.','$5.00','assets/cookies.jpg'],
-  ['Dipped Cheesecake','Biscoff, Strawberry Crunch, or Oreo.','$10.00','assets/dipped-cheesecake.jpg'],
-  ['Boudin Balls','2 boudin balls served with cheese sauce.','$10.00','assets/boudin-balls.jpg'],
-  ["Flamin' Hot Mozzarella Sticks","Flamin' Hot mozzarella sticks served with cheese sauce. 6 for $10.",'$10.00','assets/flamin-hot-mozzarella.jpg']
+  ['Munchie Box','Chicken & waffles with 1 boudin ball.','$15.00','munchie-box.jpg'],
+  ['Lil Loaded Tray','2 boudin balls, Rotel dip, 6pc wings, shrimp Alfredo, baby shower meatballs, and chips.','$20.00','lil-loaded-tray.jpg'],
+  ['Reel Loaded','Salmon, shrimp, potatoes, and broccoli.','$20.00','reel-loaded.jpg'],
+  ['Cookies','Biscoff, Strawberry Crunch, or Oreo.','$5.00','cookies.jpg'],
+  ['Dipped Cheesecake','Biscoff, Strawberry Crunch, or Oreo.','$10.00','dipped-cheesecake.jpg'],
+  ['Boudin Balls','2 boudin balls served with cheese sauce.','$10.00','boudin-balls.jpg'],
+  ["Flamin' Hot Mozzarella Sticks","Flamin' Hot mozzarella sticks served with cheese sauce. 6 for $10.",'$10.00','flamin-hot-mozzarella.jpg']
  ]};
 let cart=[];
+const CASHAPP_HANDLE = "$overlyloadedkitchenn";
+const BUSINESS_EMAIL = "getloadedkitchenn@gmail.com";
+function cartTotal(){return cart.reduce((s,x)=>s+x[1]*x[2],0)}
+function openCheckout(){if(!cart.length){alert("Add at least one item to your Load first.");return;} document.getElementById("checkoutBox").style.display="block"; updateSummary();}
+function toggleAddress(){document.getElementById("addressWrap").style.display=document.getElementById("orderType").value==="delivery"?"block":"none";updateSummary();}
+function updateSummary(){const delivery=document.getElementById("orderType")?.value==="delivery"?10:0; const total=cartTotal()+delivery; const dep=5; document.getElementById("checkoutSummary").innerHTML=`Subtotal: $${cartTotal().toFixed(2)}<br>Delivery: $${delivery.toFixed(2)}<br><b>Final balance: $${total.toFixed(2)}</b><br>Deposit due now: <b>$${dep.toFixed(2)}</b>`;}
+function orderText(){
+ const type=document.getElementById("orderType").value, addr=document.getElementById("custAddress").value.trim();
+ if(!document.getElementById("custName").value.trim()||!document.getElementById("custPhone").value.trim()){alert("Please enter your name and phone.");return null;}
+ if(type==="delivery"&&!addr){alert("Please enter your delivery address.");return null;}
+ const items=cart.map(x=>`${x[0]} x${x[1]} — $${(x[1]*x[2]).toFixed(2)}`).join("\n");
+ const delivery=type==="delivery"?10:0;
+ return `GET LOADED ORDER\n\nName: ${document.getElementById("custName").value.trim()}\nPhone: ${document.getElementById("custPhone").value.trim()}\nType: ${type}\n${type==="delivery"?"Delivery address: "+addr+"\n":"Pickup address: Will be sent by email\n"}Time: ${document.getElementById("pickupTime").value}\n\nItems:\n${items}\n\nSubtotal: $${cartTotal().toFixed(2)}\nDelivery: $${delivery.toFixed(2)}\n$5 non-refundable deposit paid separately via Cash App.\nCash App: ${CASHAPP_HANDLE}`;
+}
+function payDeposit(){
+ const type=document.getElementById("orderType").value, addr=document.getElementById("custAddress").value.trim();
+ if(!document.getElementById("custName").value.trim()||!document.getElementById("custPhone").value.trim()){alert("Please enter your name and phone first.");return;}
+ if(type==="delivery"&&!addr){alert("Please enter your delivery address.");return;}
+ window.location.href="https://cash.app/"+CASHAPP_HANDLE+"?amount=5";
+}
+function sendOrder(){
+ const body=orderText(); if(!body)return;
+ window.location.href="mailto:"+BUSINESS_EMAIL+"?subject="+encodeURIComponent("Get Loaded Order")+"&body="+encodeURIComponent(body);
+}
 function renderSection(id,title,items){
  const root=document.getElementById(id); root.innerHTML='<div class="section-title">'+title+'</div><div class="grid"></div>';
  const grid=root.querySelector('.grid');
